@@ -5,6 +5,7 @@
   "author": "https://github.com/AndreasFaust",
   "license": "MIT",
   "repository": "https://github.com/AndreasFaust/react-ticker",
+  "homepage": "https://AndreasFaust.github.io/react-ticker",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
