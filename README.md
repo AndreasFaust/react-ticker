@@ -6,6 +6,18 @@
 
 ## Coming soon!
 
+## ToDo
+
+- Opposite direction
+- Start & stop
+- Set Starting-point relative to ticker-width
+- Numbering Elements
+
+- Example Page
+- Write docs
+
+## Props
+
 ## License
 
 MIT © [https://github.com/AndreasFaust](https://github.com/https://github.com/AndreasFaust)

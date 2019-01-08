@@ -5,6 +5,9 @@
     },
     {
       "path": "src"
+    },
+    {
+      "path": "example/src"
     }
   ]
 }
