@@ -1,27 +1,28 @@
 import React from 'react'
-import { node, number } from 'prop-types'
+import { func, node, number, oneOfType, string } from 'prop-types'
 import debounce from 'lodash/debounce'
 import guidGenerator from './utils/guidGenerator'
-import TickerElement from './utils/element'
+import getHighest from './utils/getHighest'
+import TickerElement from './Element'
+import getDefaultState from './utils/getDefaultState'
 
 export default class Ticker extends React.Component {
   static propTypes = {
-    startPosition: number,
-    duration: number,
-    children: node
+    offset: oneOfType([number, string]),
+    speed: number,
+    children: oneOfType([node, func]).isRequired,
+    direction: string,
+    mode: string
   }
 
   static defaultProps = {
-    startPosition: 0,
-    duration: 15000
+    offset: 0,
+    speed: 5,
+    direction: 'toLeft',
+    mode: 'chain'
   }
 
-  state = {
-    elements: [guidGenerator()],
-    windowWidth: window.innerWidth,
-    startPosition: this.props.startPosition,
-    rect: null
-  }
+  state = getDefaultState(this.props.offset)
 
   dOnResize = debounce(() => this.onResize(), 150)
 
@@ -33,29 +34,34 @@ export default class Ticker extends React.Component {
     window.removeEventListener('resize', this.dOnResize)
   }
 
-  setRect = (rect) => {
-    this.setState({ rect })
+  setHeight = (height) => {
+    this.setState(prevState => {
+      const elements = prevState.elements.map(el => ({ ...el, height }))
+      return {
+        elements,
+        height: getHighest(elements)
+      }
+    })
   }
 
   onResize = () => {
-    this.setState({
-      elements: [guidGenerator()],
-      startPosition: this.props.startPosition,
-      windowWidth: window.innerWidth,
-      rect: null
-    })
+    this.setState(getDefaultState(this.props.offset))
   }
 
   onFinish = (id) => {
     this.setState(prevState => ({
-      elements: prevState.elements.filter(el => el !== id)
+      elements: prevState.elements.filter(el => el.id !== id)
     }))
   }
 
-  onNext = (id, startPosition) => {
+  onNext = (id, offset) => {
     this.setState(prevState => ({
-      elements: [...prevState.elements, guidGenerator()],
-      startPosition
+      elements: [...prevState.elements, {
+        id: guidGenerator(),
+        index: prevState.elements[prevState.elements.length - 1].index + 1,
+        height: 0
+      }],
+      prevOffset: offset
     }))
   }
 
@@ -65,24 +71,28 @@ export default class Ticker extends React.Component {
       style={{
         position: 'relative',
         overflow: 'hidden',
-        height: this.state.rect && `${this.state.rect.height}px`
+        height: this.state.height && `${this.state.height}px`
       }}
     >
-      {this.state.elements.map(el => (
-        <TickerElement
-          key={el}
-          id={el}
-          duration={this.props.duration}
-          startPosition={this.state.startPosition}
-          rect={this.state.rect}
-          setRect={this.setRect}
-          windowWidth={this.state.windowWidth}
-          onFinish={this.onFinish}
-          onNext={this.onNext}
-        >
-          {this.props.children}
-        </TickerElement>
-      ))}
+      {this.state.elements.map(el => {
+        return (
+          <TickerElement
+            key={el.id}
+            id={el.id}
+            index={el.index}
+            duration={100000 / this.props.speed}
+            direction={this.props.direction}
+            prevOffset={this.state.prevOffset}
+            setHeight={this.setHeight}
+            windowWidth={this.state.windowWidth}
+            onFinish={this.onFinish}
+            onNext={this.onNext}
+            mode={this.props.mode}
+          >
+            {this.props.children}
+          </TickerElement>
+        )
+      })}
     </div>
   )
 }
