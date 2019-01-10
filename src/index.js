@@ -1,5 +1,5 @@
 import React from 'react'
-import { func, node, number, oneOfType, string } from 'prop-types'
+import { bool, func, node, number, oneOfType, string } from 'prop-types'
 import debounce from 'lodash/debounce'
 import guidGenerator from './utils/guidGenerator'
 import getHighest from './utils/getHighest'
@@ -8,25 +8,30 @@ import getDefaultState from './utils/getDefaultState'
 
 export default class Ticker extends React.Component {
   static propTypes = {
-    offset: oneOfType([number, string]),
-    speed: number,
     children: oneOfType([node, func]).isRequired,
+
     direction: string,
-    mode: string
+    mode: string,
+    move: bool,
+    offset: oneOfType([number, string]),
+    speed: number
   }
 
   static defaultProps = {
     offset: 0,
     speed: 5,
     direction: 'toLeft',
-    mode: 'chain'
+    mode: 'chain',
+    move: true
   }
 
   state = getDefaultState(this.props.offset)
+  tickerRef = React.createRef()
 
   dOnResize = debounce(() => this.onResize(), 150)
 
   componentDidMount = () => {
+    this.setState({ width: this.tickerRef.current.offsetWidth })
     window.addEventListener('resize', this.dOnResize)
   }
 
@@ -45,7 +50,7 @@ export default class Ticker extends React.Component {
   }
 
   onResize = () => {
-    this.setState(getDefaultState(this.props.offset))
+    this.setState(getDefaultState(this.props.offset, this.tickerRef.current.offsetWidth))
   }
 
   onFinish = (id) => {
@@ -65,34 +70,40 @@ export default class Ticker extends React.Component {
     }))
   }
 
-  render = () => (
-    <div
-      className='ticker'
-      style={{
-        position: 'relative',
-        overflow: 'hidden',
-        height: this.state.height && `${this.state.height}px`
-      }}
-    >
-      {this.state.elements.map(el => {
-        return (
-          <TickerElement
-            key={el.id}
-            id={el.id}
-            index={el.index}
-            duration={100000 / this.props.speed}
-            direction={this.props.direction}
-            prevOffset={this.state.prevOffset}
-            setHeight={this.setHeight}
-            windowWidth={this.state.windowWidth}
-            onFinish={this.onFinish}
-            onNext={this.onNext}
-            mode={this.props.mode}
-          >
-            {this.props.children}
-          </TickerElement>
-        )
-      })}
-    </div>
-  )
+  render() {
+    return (
+      <div
+        className='ticker'
+        ref={this.tickerRef}
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          height: this.state.height && `${this.state.height}px`
+        }}
+      >
+        {
+          this.state.elements.map(el => {
+            return (
+              <TickerElement
+                key={el.id}
+                id={el.id}
+                index={el.index}
+                duration={100000 / this.props.speed}
+                direction={this.props.direction}
+                prevOffset={this.state.prevOffset}
+                setHeight={this.setHeight}
+                width={this.state.width}
+                onFinish={this.onFinish}
+                onNext={this.onNext}
+                mode={this.props.mode}
+                move={this.props.move}
+              >
+                {this.props.children}
+              </TickerElement>
+            )
+          })
+        }
+      </div >
+    )
+  }
 }

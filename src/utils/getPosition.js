@@ -8,7 +8,7 @@ function getFromOffset({ rect, offset, direction }) {
   }
 }
 
-function getFrom({ index, rect, offset, windowWidth, direction }) {
+function getFrom({ index, rect, offset, width, direction }) {
   if (index === 0) return offset
 
   if (typeof offset === 'number') {
@@ -20,28 +20,28 @@ function getFrom({ index, rect, offset, windowWidth, direction }) {
       return -rect.width
     case 'toLeft':
     default:
-      return windowWidth
+      return width
   }
 }
 
-function getTo({ rect, windowWidth, direction }) {
+function getTo({ rect, width, direction }) {
   switch (direction) {
     case 'toRight':
-      return windowWidth
+      return width
     case 'toLeft':
     default:
       return -rect.width
   }
 }
 
-function getNext({ mode, from, direction, rect, windowWidth }) {
+function getNext({ mode, from, direction, rect, width }) {
   const start = from || 0
 
   switch (mode) {
     case 'await':
       switch (direction) {
         case 'toRight':
-          return windowWidth
+          return width
         case 'toLeft':
         default:
           return -rect.width
@@ -49,13 +49,13 @@ function getNext({ mode, from, direction, rect, windowWidth }) {
     case 'smooth':
       switch (direction) {
         case 'toRight':
-          return rect.width > windowWidth
+          return rect.width > width
             ? 0
-            : windowWidth - rect.width
+            : width - rect.width
         case 'toLeft':
         default:
-          return rect.width > windowWidth
-            ? windowWidth - rect.width
+          return rect.width > width
+            ? width - rect.width
             : 0
       }
     case 'chain':
@@ -65,19 +65,19 @@ function getNext({ mode, from, direction, rect, windowWidth }) {
           return 0
         case 'toLeft':
         default:
-          return rect.right + start > windowWidth
-            ? windowWidth - rect.right
-            : windowWidth - rect.left - rect.width
+          return rect.right + start > width
+            ? width - rect.right
+            : width - rect.left - rect.width
       }
   }
 }
 
-export default ({ mode, index, rect, offset, windowWidth, direction }) => {
-  const from = getFrom({ index, rect, offset, windowWidth, direction })
-  const to = getTo({ rect, windowWidth, direction })
+export default ({ mode, index, rect, offset, width, direction }) => {
+  const from = getFrom({ index, rect, offset, width, direction })
+  const to = getTo({ rect, width, direction })
   return {
     from,
     to,
-    next: getNext({ mode, from, direction, rect, windowWidth })
+    next: getNext({ mode, from, direction, rect, width })
   }
 }

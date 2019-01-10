@@ -1,21 +1,21 @@
 
 //   duration                  x
 // ------------  =  -----------------------------
-//  windowWidth     windowWidth + element.width
+//  width                  width + element.width
 
-function getDuration({ position, windowWidth, direction, duration, rect }) {
+function getDuration({ position, width, direction, duration, rect }) {
   switch (direction) {
     case 'toRight': {
-      return (duration * (windowWidth - position.from)) / windowWidth
+      return (duration * (width - position.from)) / width
     }
     case 'toLeft':
     default: {
-      return (duration * (windowWidth - (windowWidth - position.from) + rect.width)) / windowWidth
+      return (duration * (width - (width - position.from) + rect.width)) / width
     }
   }
 }
 
-export default ({ position, windowWidth, direction, duration, rect }) => {
-  const durationNormalized = getDuration({ position, windowWidth, direction, duration, rect })
-  return (durationNormalized * windowWidth) / 2000
+export default ({ position, width, direction, duration, rect }) => {
+  const durationNormalized = getDuration({ position, width, direction, duration, rect })
+  return (durationNormalized * width) / 2000
 }

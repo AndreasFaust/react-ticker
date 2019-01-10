@@ -27,28 +27,35 @@ const quotes = [
 ]
 
 export default class App extends Component {
+  state = { move: true }
+  onClick = () => {
+    this.setState(prevState => ({
+      move: !prevState.move
+    }))
+  }
   render() {
     return (
       <div>
-        <Ticker
+        {/* <Ticker
           direction='toRight'
           speed={3}
           offset="25%"
           mode="smooth"
+          move={this.state.move}
         >
           {(index) => (
             <h1>{quotes[rand(0, quotes.length - 1)]}</h1>
           )}
-        </Ticker>
+        </Ticker> */}
         <Ticker
           offset="50%"
-          mode="smooth"
+          move={this.state.move}
         >
           {(index) => (
             <h1>{quotes[rand(0, quotes.length - 1)]}</h1>
           )}
         </Ticker>
-
+        <button onClick={this.onClick}>Start and Stop</button>
       </div>
     )
   }

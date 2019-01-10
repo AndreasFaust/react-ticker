@@ -1,78 +1,69 @@
 import React from 'react'
-import { func, node, number, object, oneOfType, string } from 'prop-types'
+import { bool, func, node, number, object, oneOfType, string } from 'prop-types'
 import { Spring, animated } from 'react-spring'
+import calculatePositionDuration from './utils/calculatePositionDuration'
 import getDuration from './utils/getDuration'
-import shouldNextTriggerOnMount from './utils/shouldNextTriggerOnMount'
-import getPosition from './utils/getPosition'
-import getPrevOffset from './utils/getPrevOffset'
-import getStartOffset from './utils/getStartOffset'
 
 class TickerElement extends React.Component {
   static propTypes = {
-    prevOffset: oneOfType([number, string]),
+    children: oneOfType([node, func]).isRequired,
+    direction: string.isRequired,
     duration: number.isRequired,
-    mode: string.isRequired,
-    setHeight: func.isRequired,
-    onNext: func.isRequired,
-    onFinish: func.isRequired,
-    windowWidth: number.isRequired,
     id: string.isRequired,
     index: number.isRequired,
-    rect: object,
-    direction: string.isRequired,
-    children: oneOfType([node, func]).isRequired
+    mode: string.isRequired,
+    move: bool.isRequired,
+    onNext: func.isRequired,
+    onFinish: func.isRequired,
+    setHeight: func.isRequired,
+
+    prevOffset: oneOfType([number, string]),
+    width: number
   }
 
   static defaultProps = {
     prevOffset: undefined,
-    rect: null
+    width: null
   }
 
-  elementRef = React.createRef()
-
   state = {
-    position: { from: undefined, to: undefined, next: undefined },
+    children: this.props.children(this.props.index),
     duration: undefined,
+    move: this.props.move,
     nextTriggerOnMount: false,
     nextTriggered: false,
+    position: { from: undefined, to: undefined, next: undefined },
     rect: null,
-    children: this.props.children(this.props.index)
+    width: null,
+    x: undefined
+  }
+  x = 0
+  elementRef = React.createRef()
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.width !== prevState.width && prevState.rect) {
+      return calculatePositionDuration(nextProps, prevState)
+    }
+    if (nextProps.move !== prevState.move) {
+      const { width, direction, duration, move } = nextProps
+      const { position, rect } = prevState
+      return {
+        duration: getDuration({
+          position: { ...position, from: prevState.x },
+          width,
+          direction,
+          duration,
+          rect
+        }),
+        move
+      }
+    }
+    return null
   }
 
   componentDidMount = () => {
-    const {
-      mode,
-      prevOffset,
-      windowWidth,
-      id,
-      onNext,
-      duration,
-      direction,
-      index
-    } = this.props
-
-    const rect = this.elementRef.current.getBoundingClientRect()
-    const offset = getStartOffset({ prevOffset, rect, direction, windowWidth })
-    const position = getPosition({ mode, rect, index, offset, windowWidth, direction })
-    const nextTriggerOnMount = shouldNextTriggerOnMount({ mode, rect, offset, direction, windowWidth })
-
-    if (nextTriggerOnMount) {
-      onNext(id, getPrevOffset({ position, rect, direction }))
-    }
-
-    this.props.setHeight(rect.height)
-
     this.setState({
-      rect,
-      position,
-      duration: getDuration({
-        position,
-        windowWidth,
-        direction,
-        duration,
-        rect
-      }),
-      nextTriggerOnMount
+      rect: this.elementRef.current.getBoundingClientRect()
     })
   }
 
@@ -83,6 +74,7 @@ class TickerElement extends React.Component {
   }
 
   onFrame = ({ x }) => {
+    this.x = x
     if (this.state.nextTriggered || this.state.nextTriggerOnMount) return
     if (this.shouldTriggerNext(x)) {
       this.setState({ nextTriggered: true })
@@ -90,14 +82,22 @@ class TickerElement extends React.Component {
     }
   }
 
-  render = () => this.state.rect
+  render = () => this.state.rect && this.props.width
     ? (
       <Spring
         from={{ x: this.state.position.from }}
-        to={{ x: this.state.position.to }}
+        to={{
+          x: this.props.move
+            ? this.state.position.to
+            : this.x
+        }}
         config={{ duration: this.state.duration }}
         native
         onRest={() => {
+          if (this.x !== this.state.position.to) {
+            this.setState({ x: this.x })
+            return
+          }
           this.props.onFinish(this.props.id)
         }}
         onFrame={this.onFrame}

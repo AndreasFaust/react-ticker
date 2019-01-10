@@ -1,13 +1,13 @@
 
 import guidGenerator from './guidGenerator'
 
-const getDefaultState = (offset) => ({
+const getDefaultState = (offset, width) => ({
   elements: [{
     id: guidGenerator(),
     index: 0,
     height: 0
   }],
-  windowWidth: window.innerWidth,
+  width,
   prevOffset: offset,
   height: 0
 })
