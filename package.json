@@ -1,6 +1,6 @@
 {
   "name": "react-ticker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "React component, that moves text, images and videos like a newsticker.",
   "author": "https://github.com/AndreasFaust",
   "license": "MIT",
