@@ -1,6 +1,6 @@
 import React from 'react'
 import { bool, func, node, number, oneOfType, string } from 'prop-types'
-import debounce from 'lodash/debounce'
+import debounce from './utils/debounce'
 import guidGenerator from './utils/guidGenerator'
 import getHighest from './utils/getHighest'
 import TickerElement from './Element'
@@ -85,18 +85,18 @@ export default class Ticker extends React.Component {
           this.state.elements.map(el => {
             return (
               <TickerElement
-                key={el.id}
+                direction={this.props.direction}
                 id={el.id}
                 index={el.index}
-                duration={100000 / this.props.speed}
-                direction={this.props.direction}
-                prevOffset={this.state.prevOffset}
-                setHeight={this.setHeight}
-                width={this.state.width}
-                onFinish={this.onFinish}
-                onNext={this.onNext}
                 mode={this.props.mode}
                 move={this.props.move}
+                onFinish={this.onFinish}
+                onNext={this.onNext}
+                prevOffset={this.state.prevOffset}
+                key={el.id}
+                speed={this.props.speed}
+                setHeight={this.setHeight}
+                width={this.state.width}
               >
                 {this.props.children}
               </TickerElement>

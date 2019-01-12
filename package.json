@@ -1,7 +1,7 @@
 {
   "name": "react-ticker",
-  "version": "1.0.3",
-  "description": "React component, that moves text, images and videos like a newsticker.",
+  "version": "1.0.4",
+  "description": "React Ticker is a lightweight, performant React component, that moves text, images and videos infinitely like a newsticker.",
   "author": "https://github.com/AndreasFaust",
   "license": "MIT",
   "repository": "https://github.com/AndreasFaust/react-ticker",
@@ -13,6 +13,14 @@
     "node": ">=8",
     "npm": ">=5"
   },
+  "keywords": [
+    "React",
+    "Ticker",
+    "Newsticker",
+    "Marquee",
+    "Animation",
+    "infinite"
+  ],
   "scripts": {
     "test": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:watch": "react-scripts test --env=jsdom",
@@ -25,8 +33,7 @@
   "peerDependencies": {
     "prop-types": "^15.5.4",
     "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "react-spring": "^7.2.8"
+    "react-dom": "^16.7.0"
   },
   "devDependencies": {
     "@svgr/rollup": "^2.4.1",

@@ -1,4 +1,3 @@
-import getDuration from './getDuration'
 import shouldNextTriggerOnMount from './shouldNextTriggerOnMount'
 import getPosition from './getPosition'
 import getPrevOffset from './getPrevOffset'
@@ -11,7 +10,6 @@ export default function calculatePositionDuration(nextProps, prevState) {
     width,
     id,
     onNext,
-    duration,
     direction,
     index,
     setHeight
@@ -32,13 +30,6 @@ export default function calculatePositionDuration(nextProps, prevState) {
   return {
     rect,
     position,
-    duration: getDuration({
-      position,
-      width,
-      direction,
-      duration,
-      rect
-    }),
     nextTriggerOnMount,
     width
   }

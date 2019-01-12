@@ -36,9 +36,9 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        {/* <Ticker
+        <Ticker
           direction='toRight'
-          speed={3}
+          speed={10}
           offset="25%"
           mode="smooth"
           move={this.state.move}
@@ -46,7 +46,7 @@ export default class App extends Component {
           {(index) => (
             <h1>{quotes[rand(0, quotes.length - 1)]}</h1>
           )}
-        </Ticker> */}
+        </Ticker>
         <Ticker
           offset="50%"
           move={this.state.move}
