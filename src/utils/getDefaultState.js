@@ -5,10 +5,13 @@ const getDefaultState = (offset, width) => ({
   elements: [{
     id: guidGenerator(),
     index: 0,
-    height: 0
+    height: 0,
+    start: false,
+    offset: offset,
+    rect: null,
+    prevRect: null
   }],
   width,
-  prevOffset: offset,
   height: 0
 })
 

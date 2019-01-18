@@ -65,8 +65,8 @@ function getNext({ mode, from, direction, rect, width }) {
           return 0
         case 'toLeft':
         default:
-          return rect.right + start > width
-            ? width - rect.right
+          return rect.width + start > width
+            ? width - rect.width
             : width - rect.left - rect.width
       }
   }

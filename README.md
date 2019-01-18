@@ -6,12 +6,15 @@
 
 It can be used to replace the deprecated `marquee`-HTML-tag.
 
+This library is still under development!
+
 **[Check out the Demo!](https://andreasfaust.github.io/react-ticker/)**
 
 ## Features:
 
 - Move its child-elements from **right to left** or **left to right**.
 - **Dynamically create child-elements**, for example from an API.
+  (Does not work for dynamic widths yet!)
 - Repeat the elements infinitely.
 - Three different modes of repetition.
 - Control speed, starting and stopping.
@@ -33,8 +36,8 @@ import Ticker from 'react-ticker'
 
 const MoveStuffAround = () => (
     <Ticker>
-        {(counter) => (
-            <h1>This is the Headline of element #{counter}!</h1>
+        {({ index }) => (
+            <h1>This is the Headline of element #{index}!</h1>
             <img src="www.my-image-source.com/" alt=""/>
         )}
     </Ticker>
@@ -66,9 +69,13 @@ To await your webfonts, try out [Web Font Loader](https://github.com/typekit/web
 
 If you want to avoid linebreaks in your text-elements, use the CSS-property `white-space: nowrap;`.
 
+### Dynamic loading of elements
+
+It is possible to dynamically load new elements. This feature is still experimental. It only works properly, if you use the property `offset="run-in"` and provide a placeholder while loading. You also should provide the first element immediately.
+
 ## Dependencies
 
-React Ticker has no dependecies besides React 16+ (the minimum minor-release has to be looked up yet).
+React Ticker has no dependecies besides React 16+ (the minimum minor-release still has to be looked up).
 
 ## Browser Support
 

@@ -5,11 +5,24 @@ body {
 }
 
 h1 {
-  padding: 0 1rem;
+  padding: 0 10px;
   white-space: nowrap;
 }
 
 h1::after {
   content: "+ + +";
-  margin-left: 2rem;
+  margin: 0 10px;
+}
+
+img {
+  display: block;
+  width: 25vw;
+  height: 200px;
+  margin: 0;
+  opacity: 0;
+  transition: 1s;
+}
+
+.loaded {
+  opacity: 1;
 }

@@ -14,7 +14,8 @@ export default class Ticker extends React.Component {
     mode: string,
     move: bool,
     offset: oneOfType([number, string]),
-    speed: number
+    speed: number,
+    height: oneOfType([number, string])
   }
 
   static defaultProps = {
@@ -22,16 +23,20 @@ export default class Ticker extends React.Component {
     speed: 5,
     direction: 'toLeft',
     mode: 'chain',
-    move: true
+    move: true,
+    height: undefined
   }
-
+  next = null
   state = getDefaultState(this.props.offset)
   tickerRef = React.createRef()
 
   dOnResize = debounce(() => this.onResize(), 150)
 
   componentDidMount = () => {
-    this.setState({ width: this.tickerRef.current.offsetWidth })
+    this.setState({
+      width: this.tickerRef.current.offsetWidth,
+      height: this.props.height
+    })
     window.addEventListener('resize', this.dOnResize)
   }
 
@@ -39,18 +44,34 @@ export default class Ticker extends React.Component {
     window.removeEventListener('resize', this.dOnResize)
   }
 
-  setHeight = (height) => {
+  setRect = ({ index, rect, offset, nextOffset }) => {
     this.setState(prevState => {
-      const elements = prevState.elements.map(el => ({ ...el, height }))
+      const elements = prevState.elements.map(el => {
+        const newEl = el
+        if (el.index === index) newEl.rect = rect
+        // next element
+        if (el.index === index + 1) {
+          newEl.prevRect = rect
+          if (newEl.offset) {
+            newEl.offset = nextOffset
+          }
+        }
+        return newEl
+      })
       return {
         elements,
-        height: getHighest(elements)
+        height: this.props.height
+          ? prevState.height
+          : getHighest(elements)
       }
     })
   }
 
   onResize = () => {
-    this.setState(getDefaultState(this.props.offset, this.tickerRef.current.offsetWidth))
+    this.setState({
+      ...getDefaultState(this.props.offset, this.tickerRef.current.offsetWidth),
+      height: this.props.height
+    })
   }
 
   onFinish = (id) => {
@@ -59,14 +80,28 @@ export default class Ticker extends React.Component {
     }))
   }
 
-  onNext = (id, offset) => {
+  onNext = ({ id, index, rect, nextOffset }) => {
     this.setState(prevState => ({
-      elements: [...prevState.elements, {
-        id: guidGenerator(),
-        index: prevState.elements[prevState.elements.length - 1].index + 1,
-        height: 0
-      }],
-      prevOffset: offset
+      elements: [
+        // start next element
+        ...prevState.elements.map(el => {
+          const newEl = el
+          if (el.index === index) newEl.rect = rect
+          if (el.index === 0 || el.offset || newEl.index === index + 1) {
+            newEl.start = true
+          }
+          return newEl
+          // create new element
+        }), {
+          id: guidGenerator(),
+          index: prevState.elements[prevState.elements.length - 1].index + 1,
+          height: 0,
+          start: false,
+          offset: nextOffset,
+          rect: null,
+          prevRect: rect
+        }
+      ]
     }))
   }
 
@@ -82,20 +117,24 @@ export default class Ticker extends React.Component {
         }}
       >
         {
-          this.state.elements.map(el => {
+          this.state.width && this.state.elements.map(el => {
             return (
               <TickerElement
-                direction={this.props.direction}
+                key={el.id}
                 id={el.id}
                 index={el.index}
+                start={el.start}
+                offset={el.offset}
+                prevRect={el.prevRect}
+
+                direction={this.props.direction}
                 mode={this.props.mode}
                 move={this.props.move}
+                speed={this.props.speed}
+
                 onFinish={this.onFinish}
                 onNext={this.onNext}
-                prevOffset={this.state.prevOffset}
-                key={el.id}
-                speed={this.props.speed}
-                setHeight={this.setHeight}
+                setRect={this.setRect}
                 width={this.state.width}
               >
                 {this.props.children}
@@ -103,7 +142,7 @@ export default class Ticker extends React.Component {
             )
           })
         }
-      </div >
+      </div>
     )
   }
 }

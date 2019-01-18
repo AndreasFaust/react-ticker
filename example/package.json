@@ -6,8 +6,8 @@
   "private": true,
   "dependencies": {
     "prop-types": "^15.6.2",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
+    "react": "^16.8.0-alpha.1",
+    "react-dom": "^16.8.0-alpha.1",
     "react-scripts": "^1.1.4",
     "react-ticker": "file:.."
   },

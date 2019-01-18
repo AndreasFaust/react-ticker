@@ -1,5 +1,5 @@
-export default function getStartOffset({ prevOffset, rect, direction, width }) {
-  if (prevOffset === 'run-in') {
+export default function getStartOffset({ offset, rect, direction, width }) {
+  if (offset === 'run-in') {
     switch (direction) {
       case 'toRight':
         return -rect.width
@@ -8,9 +8,9 @@ export default function getStartOffset({ prevOffset, rect, direction, width }) {
         return width
     }
   }
-  if (typeof prevOffset === 'string') {
-    const offsetRelative = Number(prevOffset.replace('%', ''))
+  if (typeof offset === 'string') {
+    const offsetRelative = Number(offset.replace('%', ''))
     if (offsetRelative) return (width / 100) * offsetRelative
   }
-  return prevOffset
+  return offset
 }
