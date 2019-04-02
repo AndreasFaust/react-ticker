@@ -71,7 +71,40 @@ If you want to avoid linebreaks in your text-elements, use the CSS-property `whi
 
 ### Dynamic loading of elements
 
-It is possible to dynamically load new elements. This feature is still experimental. It only works properly, if you use the property `offset="run-in"` and provide a placeholder while loading. You also should provide the first element immediately.
+It is possible to dynamically load new elements. This feature is still experimental. It only works properly, if you use the property `offset="run-in"` and provide a placeholder while loading.
+
+```jsx
+const GetRatesFromAPI = () => {
+  const [rates, setRates] = useState("");
+  useEffect(() => {
+    async function fetchData() {
+      const ratesFromAPI = await makeAPICall();
+      setRates(ratesFromAPI);
+    }
+    fetchData();
+  }, []);
+  // A placeholder is needed, to tell react-ticker, that width and height might have changed
+  // It uses MutationObserver internally
+  return rates ? (
+    <p style={{ whiteSpace: "nowrap" }}>{rates.join(" +++ ")} +++ </p>
+  ) : (
+    <p style={{ visibility: "hidden" }}>Placeholder</p>
+  );
+};
+
+function StockTicker() {
+  return (
+    <Ticker offset="run-in" speed={10}>
+      {() => <GetRatesFromAPI />}
+    </Ticker>
+  );
+}
+
+export default StockTicker;
+```
+
+React Ticker calls its function-as-child anytime it runs out of content. It does not matter, if this function is a static component or a component, that loads content from an API.
+It is important, that you provide a placeholder during the loading time of the API-call, to trigger the mutation observer when the content has arrived.
 
 ## Dependencies
 
