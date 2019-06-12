@@ -68,7 +68,7 @@ export default class Ticker extends React.Component {
   }
 
   onResize = () => {
-    if (this.tickerRef.current.offsetWidth === this.state.width) return
+    if (!this.tickerRef.current || this.tickerRef.current.offsetWidth === this.state.width) return
     this.setState({
       ...getDefaultState(this.props.offset, this.tickerRef.current.offsetWidth),
       height: this.props.height
