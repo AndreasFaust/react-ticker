@@ -2,10 +2,10 @@ import * as React from 'react'
 
 type Props = {
   children: ({ index }: { index: number }) => React.ReactNode
-  direction?: string,
-  mode?: string,
+  direction?: "toRight" | "toLeft",
+  mode?: "chain" | "await" | "smooth",
   move?: boolean,
-  offset?: number | string,
+  offset?: number | "run-in" | string,
   speed?: number,
   height?: number | string
 }
