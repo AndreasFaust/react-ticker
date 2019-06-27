@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 type Props = {
+  children: ({ index }: { index: number }) => React.ReactNode
   direction?: string,
   mode?: string,
   move?: boolean,
