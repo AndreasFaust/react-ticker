@@ -6,8 +6,6 @@
 
 It can be used to replace the deprecated `marquee`-HTML-tag.
 
-This library is still under development!
-
 **[Check out the Demo!](https://andreasfaust.github.io/react-ticker/)**
 
 ## Features:
@@ -108,15 +106,50 @@ export default StockTicker;
 React Ticker calls its function-as-child anytime it runs out of content. It does not matter, if this function is a static component or a component, that loads content from an API.
 It is important, that you provide a placeholder during the loading time of the API-call, to trigger the mutation observer when the content has arrived.
 
+
+### Render only if browser-tab is visible
+
+Currently `react-ticker` runs out of elements, when you leave the browser tab. To fix it, there is this workaround using the [Page Visibility API](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API#Use_cases) utilized by this great Module: [react-page-visibility](https://www.npmjs.com/package/react-page-visibility)
+
+```jsx
+import React, { useState } from 'react'
+import Ticker from 'react-ticker'
+import PageVisibility from 'react-page-visibility'
+
+const MoveStuffAround = () => {
+  const [pageIsVisible, setPageIsVisible] = useState(true)
+
+  const handleVisibilityChange = (isVisible) => {
+    setPageIsVisible(isVisible)
+  }
+
+  return (
+    <PageVisibility onChange={handleVisibilityChange}>
+      {pageIsVisible && (
+        <Ticker>
+          {({ index }) => (
+              <>
+                  <h1>This is the Headline of element #{index}!</h1>
+                  <img src="www.my-image-source.com/" alt=""/>
+              </>
+          )}
+        </Ticker>
+      )}
+    </PageVisibility>
+  )
+}
+
+export default MoveStuffAround
+```
+
+
 ## Dependencies
 
 React Ticker has no dependecies besides React 16+ (the minimum minor-release still has to be looked up).
 
 ## Browser Support
 
-React Ticker should work in all newer browsers.
-
-More precise specification coming soon.
+React Ticker should work in all current browsers as well as Internet Explorer 11. If you discover bugs in older browser versions, please file an [issue](https://github.com/AndreasFaust/react-ticker/issues)!
 
 ## Contributing
 
