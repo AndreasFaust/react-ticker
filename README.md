@@ -47,6 +47,9 @@ export default MoveStuffAround
 
 ```
 
+Take a look at the [CodeSandbox](https://codesandbox.io/s/quizzical-lehmann-nqy7w).
+
+
 ## Props
 
 | **Name**  | **Type**         | **Default** | **Description**                                                                                                                                                                                                                                                                                                                                                   |
