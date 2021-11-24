@@ -135,6 +135,7 @@ export default class App extends Component {
           offset="100%"
           speed={10}
           move={this.state.move}
+          onNext={(i) => console.log(`${i} and next!`)}
         >
           {(index) => (
             <h1>React-Ticker</h1>
@@ -143,6 +144,7 @@ export default class App extends Component {
         <Ticker
           offset="50%"
           move={this.state.move}
+          onFinish={() => console.log("Finish!")}
         >
           {(index) => (
             <h1>{quotes[rand(0, quotes.length - 1)]}</h1>
