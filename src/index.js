@@ -1,5 +1,5 @@
 import React from 'react'
-import { bool, func, node, number, oneOfType, string } from 'prop-types'
+import {bool, func, node, number, oneOfType, string} from 'prop-types'
 import debounce from './utils/debounce'
 import guidGenerator from './utils/guidGenerator'
 import getHighest from './utils/getHighest'
@@ -15,7 +15,9 @@ export default class Ticker extends React.Component {
     move: bool,
     offset: oneOfType([number, string]),
     speed: number,
-    height: oneOfType([number, string])
+    height: oneOfType([number, string]),
+    onNext: func,
+    onFinish: func
   }
 
   static defaultProps = {
@@ -24,7 +26,9 @@ export default class Ticker extends React.Component {
     direction: 'toLeft',
     mode: 'chain',
     move: true,
-    height: undefined
+    height: undefined,
+    onNext: () => {},
+    onFinish: () => {}
   }
   next = null
   state = getDefaultState(this.props.offset)
@@ -44,7 +48,7 @@ export default class Ticker extends React.Component {
     window.removeEventListener('resize', this.dOnResize)
   }
 
-  setRect = ({ index, rect, offset, nextOffset }) => {
+  setRect = ({index, rect, offset, nextOffset}) => {
     this.setState(prevState => {
       const elements = prevState.elements.map(el => {
         const newEl = el
@@ -76,12 +80,15 @@ export default class Ticker extends React.Component {
   }
 
   onFinish = (id) => {
+    this.props.onFinish()
     this.setState(prevState => ({
       elements: prevState.elements.filter(el => el.id !== id)
     }))
   }
 
-  onNext = ({ id, index, rect, nextOffset }) => {
+  onNext = ({id, index, rect, nextOffset}) => {
+    this.props.onNext(index)
+
     this.setState(prevState => ({
       elements: [
         // start next element
@@ -107,6 +114,7 @@ export default class Ticker extends React.Component {
   }
 
   render() {
+
     return (
       <div
         className='ticker'
