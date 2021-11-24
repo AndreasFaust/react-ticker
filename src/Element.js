@@ -44,6 +44,7 @@ class TickerElement extends React.Component {
   isMoving = false
   nextTriggered = false
   elementRef = React.createRef()
+  raf = null
 
   componentDidMount = () => {
     this.setPosition(true)
@@ -83,6 +84,7 @@ class TickerElement extends React.Component {
     }
     if (prevProps.move && !this.props.move) {
       this.isMoving = false
+      window.cancelAnimationFrame(this.raf)
     }
   }
 
@@ -191,10 +193,10 @@ class TickerElement extends React.Component {
         this.props.onFinish(this.props.id)
       } else {
         prevTimestamp = timestamp
-        window.requestAnimationFrame(step)
+        this.raf = window.requestAnimationFrame(step)
       }
     }
-    window.requestAnimationFrame(step)
+    this.raf = window.requestAnimationFrame(step)
   }
 
   render = () => (
