@@ -1,7 +1,8 @@
 {
   "presets": [
     ["env", {
-      "modules": false
+      "modules": false,
+      "targets": "last 2 versions, ie 11"
     }],
     "stage-0",
     "react"
