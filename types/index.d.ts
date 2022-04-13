@@ -7,7 +7,9 @@ type Props = {
   move?: boolean,
   offset?: number | "run-in" | string,
   speed?: number,
-  height?: number | string
+  height?: number | string,
+  onNext?: (index: any) => void,
+  onFinish?: () => void
 }
 
 export default class Ticker extends React.Component<Props> {}
